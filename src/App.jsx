@@ -47,21 +47,34 @@ console.log("output Data: ", Data);//don't use + because it will conver to strin
     <div className = "">
       <Header/>
       <div className = "grid grid-cols-3 border m-5 p-5">{/*grid with 3 columns the cards span one column the expandedCard spans two.*/}
-        <div className = ""> 
+        <div className = "flex flex-col col-span-1"> 
           {Data.map(job =>(
-            <JobCard
+            <button onClick = {() => setCurrentJob(job.id)}>
+              <JobCard
               key = {job.id}
               companyName = {job.employerName}
               jobTitle = {job.jobTitle}
               Location = {job.jobLocation}
               Salary = {job.jobSalary}
               Logo = {job.employerLogo}
-            />))
+              />
+            </button>
+            ))
           }
         </div>
-        <div className = "col-span-2 justify-self-center"> 
-          
-          Expanded Job Display
+        <div className = "col-span-2 w-full"> 
+          <ExpandedJobCard
+            key = {Data[currentJob-1]?.id}
+            companyName = {Data[currentJob-1]?.employerName}
+            jobTitle = {Data[currentJob-1]?.jobTitle}
+            Location = {Data[currentJob-1]?.jobLocation}
+            Salary = {Data[currentJob-1]?.jobSalary}
+            Logo = {Data[currentJob-1]?.employerLogo}
+            jobDescription = {Data[currentJob-1]?.jobDescription}
+            jobPosted = {Data[currentJob-1]?.jobPosted}
+            jobExpiration = {Data[currentJob-1]?.jobExpiration}
+            jobLink = {Data[currentJob-1]?.jobLink}
+          />
         </div>
 
       </div>
