@@ -24,8 +24,8 @@ function ExpandedJobCard({companyName, jobTitle, Location, Salary, Logo, jobDesc
                 </button>    
             </div>
             <div className = "flex flex-col w-full p-5  items-center">
-                <p className = "text-md text-gray-600">Location: {Location}</p>
-                <p className = "text-md text-green-600 font-semibold">Salary: {Salary}</p>
+                <p className = "text-md text-gray-600"> {Location}</p>
+                {(Salary !== null) && <p className = "text-md text-green-600 font-semibold">Salary: {Salary}</p>}
                 <p className = "text-sm text-gray-500">Posted on: {new Date(jobPosted).toLocaleDateString()}</p>
                 <p className = "text-sm text-gray-500">Expires on: {new Date(jobExpiration).toLocaleDateString()}</p>
                 <p className = "p-4"> Description: {jobDescription}</p>
