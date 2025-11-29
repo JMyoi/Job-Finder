@@ -13,7 +13,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");//holds the search term
   const [jobData, setJobData] = useState({});//parsed job data using the processData function
   const [dataLoaded, setDataLoaded] = useState(false);//is there data loaded in the jobData used for initial load
-  const [loading, setLoading] = useState(false);//if loading then show loading screen
+  const [loading, setLoading] = useState(false);//if loading then show loading screen2
   //handle search when there are already results and also no data
 
 
@@ -27,11 +27,11 @@ function processData(inputData){
     return  {
       id:++num,
       employerName: job.employer_name,
-      employerLogo: job.employer_logo,  
+      employerLogo: job.employer_logo,
       jobTitle: job.job_title,
       jobLocation: job.job_location,
       jobSalary : job.job_salary,
-      jobId : job.job_id,    
+      jobId : job.job_id,
       jobLink : job.job_apply_link,
       jobPosted: job.job_posted_at_datetime_utc,
       jobExpiration: job.job_offer_expiration_timestamp,
@@ -42,10 +42,9 @@ function processData(inputData){
   return ParsedData;
 };
 
-//const Data = processData(res);
+// const Data = processData(res);
 
-
-//console.log("output Data: ", Data);//don't use + because it will conver to string.
+// console.log("output Data: ", Data);//don't use + because it will conver to string.
 
 async function handleSearch(e){
   e.preventDefault();
