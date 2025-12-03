@@ -1,11 +1,17 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
 import JobCard from './components/JobCard.jsx'  
 import ExpandedJobCard from './components/ExpandedJobCard.jsx'
 import {res} from './Data.js'
 
-
+//to do 
+/*  
+  error handle state when eror is caught on handle search.
+  save button animation and filled if it is already saved.
+  if salary is undefined then hide it
+  job count in favorite page
+*/
 
 function App() {
 
@@ -19,6 +25,17 @@ function App() {
   //handle search when there are already results and also no data
 
   // use effect, on mount get the setFavJobs from local storage.
+  useEffect(() =>{
+    const saved = JSON.parse(localStorage.getItem("savedJobs")) || [];
+    setFavJobs(saved);
+    console.log("Loaded fav jobs from local storage: ", saved);
+    setCurrentJob(saved[0].jobId);// initialize current job to first saved job
+    console.log("initial current job: ", saved[0].jobId);
+  },[]);
+
+  // useEffect(()=>{
+  //   console.log("current job: ", favJobs.find((job)=>(currentJob == job.jobId)));
+  // }, [currentJob]);
 
 function processData(inputData){
   //extract each employer_name,  employer_logo, job_title, job_location, job_salary
@@ -76,8 +93,10 @@ async function handleSearch(e){
     setJobData(Data);
     setDataLoaded(true);
     setLoading(false);
+    setCurrentJob(Data[0].jobId);//set current job to first job in results
   } catch (error) {
     console.error(error);
+    //state to show error message and screen.
     setLoading(false);
   }
 }
@@ -134,11 +153,26 @@ function handleSave(jobId){
 
         <div className = "flex flex-col col-span-1"> 
           {(favPage)? (
-            <div> Saved cards.</div>
+            favJobs.map( job =>(
+              <button  onClick = {() => setCurrentJob(job.jobId)}>
+                <div className = {(currentJob == job.jobId)?"bg-slate-100":""}>
+                  <JobCard
+                  key = {job.id}
+                  companyName = {job.employerName}
+                  jobTitle = {job.jobTitle}
+                  Location = {job.jobLocation}
+                  Salary = {job.jobSalary}
+                  Logo = {job.employerLogo}
+                  jobId = {job.jobId}
+                  handleSave = {()=>(handleSave(job.jobId))}
+                  />
+                </div>
+              </button>
+            ))
           ): (
             (dataLoaded && !loading)?(jobData.map(job =>(
-              <button  onClick = {() => setCurrentJob(job.id)}>
-                <div className = {(currentJob === job.id)?"bg-slate-100":""}>
+              <button  onClick = {() => setCurrentJob(job.jobId)}>
+                <div className = {(currentJob == job.jobId)?"bg-slate-100":""}>
                   <JobCard
                   key = {job.id}
                   companyName = {job.employerName}
@@ -158,23 +192,37 @@ function handleSave(jobId){
 
 
         <div className = "col-span-2 w-full"> 
-          {(favPage)?(
-            <div>expanded card</div>
+          {
+          (favPage)?(
+            <ExpandedJobCard
+            companyName = {favJobs.find((job)=>(currentJob == job.jobId)).employerName}
+            jobTitle = {favJobs.find((job)=>(currentJob == job.jobId)).jobTitle}
+            Location = {favJobs.find((job)=>(currentJob == job.jobId)).jobLocation}
+            Salary = {favJobs.find((job)=>(currentJob == job.jobId)).jobSalary}
+            Logo = {favJobs.find((job)=>(currentJob == job.jobId)).employerLogo}
+            jobDescription = {favJobs.find((job)=>(currentJob == job.jobId)).jobDescription}
+            jobPosted = {favJobs.find((job)=>(currentJob == job.jobId)).jobPosted}
+            jobExpiration = {favJobs.find((job)=>(currentJob == job.jobId)).jobExpiration}
+            jobLink = {favJobs.find((job)=>(currentJob == job.jobId)).jobLink}
+            />
           ):(
           (dataLoaded && !loading)?(
             <ExpandedJobCard
-            key = {jobData[currentJob-1]?.id}
-            companyName = {jobData[currentJob-1]?.employerName}
-            jobTitle = {jobData[currentJob-1]?.jobTitle}
-            Location = {jobData[currentJob-1]?.jobLocation}
-            Salary = {jobData[currentJob-1]?.jobSalary}
-            Logo = {jobData[currentJob-1]?.employerLogo}
-            jobDescription = {jobData[currentJob-1]?.jobDescription}
-            jobPosted = {jobData[currentJob-1]?.jobPosted}
-            jobExpiration = {jobData[currentJob-1]?.jobExpiration}
-            jobLink = {jobData[currentJob-1]?.jobLink}
-          />):
-          (<></>))}
+            companyName = {jobData.find((job)=>(currentJob == job.jobId)).employerName}
+            jobTitle = {jobData.find((job)=>(currentJob == job.jobId)).jobTitle}
+            Location = {jobData.find((job)=>(currentJob == job.jobId)).jobLocation}
+            Salary = {jobData.find((job)=>(currentJob == job.jobId)).jobSalary}
+            Logo = {jobData.find((job)=>(currentJob == job.jobId)).employerLogo}
+            jobDescription = {jobData.find((job)=>(currentJob == job.jobId)).jobDescription}
+            jobPosted = {jobData.find((job)=>(currentJob == job.jobId)).jobPosted}
+            jobExpiration = {jobData.find((job)=>(currentJob == job.jobId)).jobExpiration}
+            jobLink = {jobData.find((job)=>(currentJob == job.jobId)).jobLink}
+          />):(<></>)
+        )
+
+
+          }
+
           
         </div>
 
