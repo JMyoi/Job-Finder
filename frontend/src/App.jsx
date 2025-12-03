@@ -14,6 +14,8 @@ function App() {
   const [jobData, setJobData] = useState({});//parsed job data using the processData function
   const [dataLoaded, setDataLoaded] = useState(false);//is there data loaded in the jobData used for initial load
   const [loading, setLoading] = useState(false);//if loading then show loading screen2
+  const [favPage, setFavPage] = useState(false);
+  const [favJobs, setFavJobs] = useState([]);
   //handle search when there are already results and also no data
 
 
@@ -86,13 +88,20 @@ async function handleSearch(e){
       
       
       <div className = "flex justify-center items-center ">
-        <form onSubmit = {handleSearch} className = "w-full flex justify-center items-center">
+        {(favPage)?(
+          <div className = "w-full flex justify-center items-center">
+            <p>Job Count: </p>
+            <p className = "cursor-pointer underline pl-12 text-xl" onClick = {()=>(setFavPage(false))}>Search Jobs</p>
+          </div>
+        ):
+        (<form onSubmit = {handleSearch} className = "w-full flex justify-center items-center">
           <input type = "text" placeholder = "Search jobs... (Job Title and Location, e.g., Software Engineer in New York)" className =  " border-2 rounded-lg m-5 p-2 w-1/2"
             onChange = {(e) => setSearchTerm(e.target.value)} 
           />
           <input type = "submit" value = "Go" className = "border p-1 rounded-lg cursor-pointer hover:bg-slate-100"/>
-          <p className = "cursor-pointer underline pl-12 text-xl">Saved Jobs(Coming Soon)</p>
-        </form>
+          <p className = "cursor-pointer underline pl-12 text-xl" onClick = {()=>(setFavPage(true))}>Saved Jobs</p>
+        </form>)
+        }
       </div>
 
       <div className = "grid grid-cols-3 border m-5 p-5">{/*grid with 3 columns the cards span one column the expandedCard spans two.*/}
