@@ -1,5 +1,5 @@
 
-function JobCard({companyName, jobTitle, Location, Logo}){
+function JobCard({companyName, jobTitle, Location, Logo, jobId, handleSave}){
     return(
         <div className = "border-2 rounded-lg m-2 p-2 hover:shadow-lg hover:bg-gray-100 cursor-pointer">
             <div className = "grid grid-cols-6 gap-3 p-4 justify-items-center items-center">
@@ -11,7 +11,7 @@ function JobCard({companyName, jobTitle, Location, Logo}){
                     <p className = "text-sm">{companyName}</p>
                     <p className = "text-xs text-gray-600">{Location}</p>
                 </div>
-                <div className = "size-8">
+                <div className = "size-8" onClick = {handleSave}>
                     <img src = "src/assets/star.png"/>
                 </div>
             </div>

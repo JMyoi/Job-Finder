@@ -80,6 +80,21 @@ async function handleSearch(e){
     setLoading(false);
   }
 }
+function handleSave(jobId){
+  const saved = JSON.parse(localStorage.getItem("savedJobs")) || [];// short circuit, if there is no savedJobs key then initialize empty array.
+
+  const jobToSave = jobData.find((job) =>{return job.jobId == jobId});
+
+  // avoid duplicates
+  const exists = saved.some(j => j.jobId == jobId);
+  if (!exists) {
+    saved.push(jobToSave);  
+    console.log("saving this job: ", jobToSave);
+  }
+  localStorage.setItem("savedJobs", JSON.stringify(saved));
+  console.log("Local Storage saved jobs: ", saved);
+
+}
 
 
   return (
@@ -124,6 +139,8 @@ async function handleSearch(e){
                 Location = {job.jobLocation}
                 Salary = {job.jobSalary}
                 Logo = {job.employerLogo}
+                jobId = {job.jobId}
+                handleSave = {()=>(handleSave(job.jobId))}
                 />
               </div>
               
