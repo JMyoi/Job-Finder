@@ -11,13 +11,14 @@ function App() {
 
   const [currentJob, setCurrentJob] = useState(1);//holds the current job Id that is displayed
   const [searchTerm, setSearchTerm] = useState("");//holds the search term
-  const [jobData, setJobData] = useState({});//parsed job data using the processData function
+  const [jobData, setJobData] = useState([]);//parsed job data using the processData function
   const [dataLoaded, setDataLoaded] = useState(false);//is there data loaded in the jobData used for initial load
   const [loading, setLoading] = useState(false);//if loading then show loading screen2
   const [favPage, setFavPage] = useState(false);
   const [favJobs, setFavJobs] = useState([]);
   //handle search when there are already results and also no data
 
+  // use effect, on mount get the setFavJobs from local storage.
 
 function processData(inputData){
   //extract each employer_name,  employer_logo, job_title, job_location, job_salary
@@ -80,6 +81,7 @@ async function handleSearch(e){
     setLoading(false);
   }
 }
+
 function handleSave(jobId){
   const saved = JSON.parse(localStorage.getItem("savedJobs")) || [];// short circuit, if there is no savedJobs key then initialize empty array.
 
@@ -88,19 +90,21 @@ function handleSave(jobId){
   // avoid duplicates
   const exists = saved.some(j => j.jobId == jobId);
   if (!exists) {
-    saved.push(jobToSave);  
+    saved.push(jobToSave); 
     console.log("saving this job: ", jobToSave);
+  } else{
+    console.log("job already saved");
   }
   localStorage.setItem("savedJobs", JSON.stringify(saved));
   console.log("Local Storage saved jobs: ", saved);
-
+  setFavJobs(saved);
+  console.log("fav job state: ", favJobs);
 }
 
 
   return (
     <div className = "">
       <Header/>
-      
       
       <div className = "flex justify-center items-center ">
         {(favPage)?(
@@ -120,7 +124,7 @@ function handleSave(jobId){
       </div>
 
       <div className = "grid grid-cols-3 border m-5 p-5">{/*grid with 3 columns the cards span one column the expandedCard spans two.*/}
-        {(!dataLoaded && !loading)&&(<p className = "col-start-2 text-center text-xl">Welcome</p>)} 
+        {(!dataLoaded && !loading && !favPage)&&(<p className = "col-start-2 text-center text-xl">Welcome</p>)} 
         {(loading)&&(
           <div className = "flex flex-row items-center col-start-2">
           <img src = "src/assets/loading.png" className = "h-10 w-10 m-4 animate-spin"></img>
@@ -129,27 +133,35 @@ function handleSave(jobId){
         )}
 
         <div className = "flex flex-col col-span-1"> 
-          {(dataLoaded && !loading)?(jobData.map(job =>(
-            <button  onClick = {() => setCurrentJob(job.id)}>
-              <div className = {(currentJob === job.id)?"bg-slate-100":""}>
-                <JobCard
-                key = {job.id}
-                companyName = {job.employerName}
-                jobTitle = {job.jobTitle}
-                Location = {job.jobLocation}
-                Salary = {job.jobSalary}
-                Logo = {job.employerLogo}
-                jobId = {job.jobId}
-                handleSave = {()=>(handleSave(job.jobId))}
-                />
-              </div>
-              
-            </button>
-            ))):(<></>)
-          }
+          {(favPage)? (
+            <div> Saved cards.</div>
+          ): (
+            (dataLoaded && !loading)?(jobData.map(job =>(
+              <button  onClick = {() => setCurrentJob(job.id)}>
+                <div className = {(currentJob === job.id)?"bg-slate-100":""}>
+                  <JobCard
+                  key = {job.id}
+                  companyName = {job.employerName}
+                  jobTitle = {job.jobTitle}
+                  Location = {job.jobLocation}
+                  Salary = {job.jobSalary}
+                  Logo = {job.employerLogo}
+                  jobId = {job.jobId}
+                  handleSave = {()=>(handleSave(job.jobId))}
+                  />
+                </div>
+                
+              </button>
+              ))):(<></>)
+          )}
         </div>
+
+
         <div className = "col-span-2 w-full"> 
-          {(dataLoaded && !loading)?(
+          {(favPage)?(
+            <div>expanded card</div>
+          ):(
+          (dataLoaded && !loading)?(
             <ExpandedJobCard
             key = {jobData[currentJob-1]?.id}
             companyName = {jobData[currentJob-1]?.employerName}
@@ -162,7 +174,7 @@ function handleSave(jobId){
             jobExpiration = {jobData[currentJob-1]?.jobExpiration}
             jobLink = {jobData[currentJob-1]?.jobLink}
           />):
-          (<></>)}
+          (<></>))}
           
         </div>
 

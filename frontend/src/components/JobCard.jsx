@@ -19,3 +19,4 @@ function JobCard({companyName, jobTitle, Location, Logo, jobId, handleSave}){
     )
 }
 export default JobCard;
+
