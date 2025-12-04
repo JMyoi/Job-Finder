@@ -8,7 +8,6 @@ import {res} from './Data.js'
 //to do 
 /*  
   error handle state when eror is caught on handle search.
-  save button animation and filled if it is already saved.
   if salary is undefined then hide it
   job count in favorite page
 */
@@ -22,20 +21,22 @@ function App() {
   const [loading, setLoading] = useState(false);//if loading then show loading screen2
   const [favPage, setFavPage] = useState(false);
   const [favJobs, setFavJobs] = useState([]);
+  const [favJobCount, setFavJobCount] = useState(0);
   //handle search when there are already results and also no data
 
   // use effect, on mount get the setFavJobs from local storage.
   useEffect(() =>{
     const saved = JSON.parse(localStorage.getItem("savedJobs")) || [];
     setFavJobs(saved);
+    setFavJobCount(saved.length);
     console.log("Loaded fav jobs from local storage: ", saved);
-    setCurrentJob(saved[0].jobId);// initialize current job to first saved job
-    console.log("initial current job: ", saved[0].jobId);
+    if (saved.length > 0) {
+      setCurrentJob(saved[0].jobId);// initialize current job to first saved job
+      console.log("initial current job: ", saved[0].jobId);
+    }
   },[]);
 
-  // useEffect(()=>{
-  //   console.log("current job: ", favJobs.find((job)=>(currentJob == job.jobId)));
-  // }, [currentJob]);
+
 
 function processData(inputData){
   //extract each employer_name,  employer_logo, job_title, job_location, job_salary
@@ -107,6 +108,10 @@ function handleSave(jobId){
   const jobToSave = jobData.find((job) =>{return job.jobId == jobId});
 
   // avoid duplicates
+  if (!jobToSave) {
+    console.warn("handleSave: job not found in jobData for id", jobId);
+    return;
+  }
   const exists = saved.some(j => j.jobId == jobId);
   if (!exists) {
     saved.push(jobToSave); 
@@ -117,7 +122,33 @@ function handleSave(jobId){
   localStorage.setItem("savedJobs", JSON.stringify(saved));
   console.log("Local Storage saved jobs: ", saved);
   setFavJobs(saved);
-  console.log("fav job state: ", favJobs);
+  setFavJobCount(saved.length);
+  console.log("fav job state (new): ", saved);
+}
+
+function handleUnsave(jobId){
+  const saved = JSON.parse(localStorage.getItem("savedJobs")) || [];
+  const filtered = saved.filter(j => j.jobId != jobId);
+  localStorage.setItem("savedJobs", JSON.stringify(filtered));
+  setFavJobs(filtered);
+  setFavJobCount(filtered.length);
+  console.log("Removed job from saved, new saved list:", filtered);
+  // if the current job is the one being unsaved, update currentJob to another saved job or reset
+  if (currentJob == jobId) {
+    if (filtered.length > 0) {
+      setCurrentJob(filtered[0].jobId);
+    } else {
+      setCurrentJob(null); // or some default value indicating no job is selected
+    }
+}
+}
+
+function isSaved(jobId){
+  if( favJobs.some(j => j.jobId == jobId) ){
+    return true;
+  } else{
+    return false;
+  }
 }
 
 
@@ -127,8 +158,8 @@ function handleSave(jobId){
       
       <div className = "flex justify-center items-center ">
         {(favPage)?(
-          <div className = "w-full flex justify-center items-center">
-            <p>Job Count: </p>
+          <div className = "w-full flex justify-center items-center p-10">
+            <p className = "text-xl">Job Count: {favJobCount}</p>
             <p className = "cursor-pointer underline pl-12 text-xl" onClick = {()=>(setFavPage(false))}>Search Jobs</p>
           </div>
         ):
@@ -157,7 +188,7 @@ function handleSave(jobId){
               <button  onClick = {() => setCurrentJob(job.jobId)}>
                 <div className = {(currentJob == job.jobId)?"bg-slate-100":""}>
                   <JobCard
-                  key = {job.id}
+                  key = {job.jobId}
                   companyName = {job.employerName}
                   jobTitle = {job.jobTitle}
                   Location = {job.jobLocation}
@@ -165,6 +196,8 @@ function handleSave(jobId){
                   Logo = {job.employerLogo}
                   jobId = {job.jobId}
                   handleSave = {()=>(handleSave(job.jobId))}
+                  handleUnsave = {()=>(handleUnsave(job.jobId))}
+                  isSaved = {isSaved(job.jobId)}
                   />
                 </div>
               </button>
@@ -182,6 +215,8 @@ function handleSave(jobId){
                   Logo = {job.employerLogo}
                   jobId = {job.jobId}
                   handleSave = {()=>(handleSave(job.jobId))}
+                  handleUnsave = {()=>(handleUnsave(job.jobId))}
+                  isSaved = {isSaved(job.jobId)}
                   />
                 </div>
                 
@@ -193,7 +228,7 @@ function handleSave(jobId){
 
         <div className = "col-span-2 w-full"> 
           {
-          (favPage)?(
+          (favPage )?(
             <ExpandedJobCard
             companyName = {favJobs.find((job)=>(currentJob == job.jobId)).employerName}
             jobTitle = {favJobs.find((job)=>(currentJob == job.jobId)).jobTitle}
@@ -219,10 +254,7 @@ function handleSave(jobId){
             jobLink = {jobData.find((job)=>(currentJob == job.jobId)).jobLink}
           />):(<></>)
         )
-
-
           }
-
           
         </div>
 
