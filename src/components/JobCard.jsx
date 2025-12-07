@@ -1,3 +1,5 @@
+import goldenStar from '../assets/goldenStar.png'
+import emptyStar from '../assets/star.png'
 
 function JobCard({companyName, jobTitle, Location, Logo, handleSave, handleUnsave, isSaved}){
     return(
@@ -16,11 +18,11 @@ function JobCard({companyName, jobTitle, Location, Logo, handleSave, handleUnsav
                 
                 {(isSaved)? (
                     <div className = "size-8 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110" onClick = {(e) => { e.stopPropagation(); handleUnsave(); }}>
-                      <img src = "src/assets/goldenStar.png"/>
+                      <img src = {goldenStar}/>
                     </div>
                 ): (
                     <div className = "size-8 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110" onClick = {(e) => { e.stopPropagation(); handleSave(); }}>
-                        <img src = "src/assets/star.png"/>
+                        <img src = {emptyStar}/>
                     </div>
                 )}
                 

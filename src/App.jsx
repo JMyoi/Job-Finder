@@ -3,6 +3,7 @@ import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
 import JobCard from './components/JobCard.jsx'  
 import ExpandedJobCard from './components/ExpandedJobCard.jsx'
+import loadingIcon from './assets/loading.png'
 import {res} from './Data.js'
 
 //to do 
@@ -176,7 +177,7 @@ function isSaved(jobId){
         {(!dataLoaded && !loading && !favPage)&&(<p className = "col-start-2 text-center text-xl">Welcome</p>)} 
         {(loading)&&(
           <div className = "flex flex-row items-center col-start-2">
-          <img src = "src/assets/loading.png" className = "h-10 w-10 m-4 animate-spin"></img>
+          <img src = {loadingIcon} className = "h-10 w-10 m-4 animate-spin"></img>
           <p className = "text-xl">Loading</p>
           </div>
         )}
