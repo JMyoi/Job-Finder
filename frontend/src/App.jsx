@@ -9,6 +9,7 @@ import {res} from './Data.js'
 /*  
   error handle state when eror is caught on handle search.
   if salary is undefined then hide it
+  handle render for no jobs saved
 */
 
 function App() {
@@ -28,11 +29,13 @@ function App() {
     const saved = JSON.parse(localStorage.getItem("savedJobs")) || [];
     setFavJobs(saved);
     setFavJobCount(saved.length);
-    console.log("Loaded fav jobs from local storage: ", saved);
+    console.log("length of saved jobs: ", favJobCount);
+    console.log("Loaded fav jobs from local storage: ", saved.length);
     if (saved.length > 0) {
       setCurrentJob(saved[0].jobId);// initialize current job to first saved job
-      console.log("initial current job: ", saved[0].jobId);
+      console.log("initial current job: ", saved[0].jobId, );
     }
+    
   },[]);
 
 
