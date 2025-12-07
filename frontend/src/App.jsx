@@ -9,7 +9,6 @@ import {res} from './Data.js'
 /*  
   error handle state when eror is caught on handle search.
   if salary is undefined then hide it
-  job count in favorite page
 */
 
 function App() {
@@ -194,7 +193,6 @@ function isSaved(jobId){
                   Location = {job.jobLocation}
                   Salary = {job.jobSalary}
                   Logo = {job.employerLogo}
-                  jobId = {job.jobId}
                   handleSave = {()=>(handleSave(job.jobId))}
                   handleUnsave = {()=>(handleUnsave(job.jobId))}
                   isSaved = {isSaved(job.jobId)}
@@ -213,7 +211,6 @@ function isSaved(jobId){
                   Location = {job.jobLocation}
                   Salary = {job.jobSalary}
                   Logo = {job.employerLogo}
-                  jobId = {job.jobId}
                   handleSave = {()=>(handleSave(job.jobId))}
                   handleUnsave = {()=>(handleUnsave(job.jobId))}
                   isSaved = {isSaved(job.jobId)}

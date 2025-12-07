@@ -1,5 +1,5 @@
 
-function JobCard({companyName, jobTitle, Location, Logo, jobId, handleSave, handleUnsave, isSaved}){
+function JobCard({companyName, jobTitle, Location, Logo, handleSave, handleUnsave, isSaved}){
     return(
         <div className = "border-2 rounded-lg m-2 p-2 hover:shadow-lg hover:bg-gray-100 cursor-pointer">
             <div className = "grid grid-cols-6 gap-3 p-4 justify-items-center items-center">
